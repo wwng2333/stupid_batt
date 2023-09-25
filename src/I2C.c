@@ -6,6 +6,37 @@ void I2C_Init()
 	P3M1 |= 0x0c; 
 }
 
+//uint16_t AXP173_Read_ADC(uint8_t addr)
+//{
+//	
+//}
+
+float AXP173_Read_VBUS_Voltage()
+{
+	float ADCLSB = 1.7 / 1000.0;
+	return (float)I2C_Read_2Byte(0x5A) * ADCLSB;
+}
+
+float AXP173_Read_APS_Voltage()
+{
+	float ADCLSB = 1.4 / 1000.0;
+	return (float)I2C_Read_2Byte(0x7E) * ADCLSB;
+}
+
+float AXP173_Read_BAT_Voltage()
+{
+	float ADCLSB = 1.1 / 1000.0;
+	return (float)I2C_Read_2Byte(0x78) * ADCLSB;
+}
+
+float AXP173_Read_InternalTemp()
+{
+	float ADCLSB = 0.1;
+	const float OFFSET_DEG_C = -144.7;
+	float ReData = (float)I2C_Read_2Byte(0x5E);
+	return OFFSET_DEG_C + ReData * ADCLSB;
+}
+
 void AXP173_Set_Voltage_DCDC2(uint16_t voltage)
 {
 	uint8_t dat = 0;
@@ -26,6 +57,30 @@ void AXP173_Set_Voltage_LDO4(uint16_t voltage)
 		//printf("DCDC2 %dmV 0x23=%d", voltage, dat);
 		I2C_WriteByte(0x27, dat); //DC-DC2
 	}
+}
+
+uint16_t I2C_Read_2Byte(uint8_t addr)
+{
+	uint16_t dat = 0;
+	uint8_t dat1, dat2;
+	I2C_Start();
+	I2C_SendData(AXP173_ADDR);
+	I2C_RecvACK();
+	I2C_SendData(addr);
+	I2C_RecvACK();	
+	I2C_Start();
+	I2C_SendData(AXP173_ADDR + 1);
+	I2C_RecvACK();
+	dat1 = I2C_RecvData();
+	I2C_SendACK();
+	dat2 = I2C_RecvData();
+	I2C_SendNAK();
+	I2C_Stop();
+	//UartSend(dat1);
+	//UartSend(dat2);
+	dat = (dat1 << 4) + dat2;
+	Delay30us();
+	return dat;
 }
 
 uint8_t I2C_ReadByte(uint8_t addr)
@@ -88,7 +143,7 @@ void I2C_SendData(uint8_t dat)
     SCL = 0;
 }
 
-void I2C_RecvACK()
+void I2C_SendACK()
 {
     SCL = 0;
     Delay12us();
@@ -97,6 +152,17 @@ void I2C_RecvACK()
     Delay12us();
     SCL = 0;
     SDA = 1;
+    Delay12us();
+}
+
+void I2C_RecvACK()
+{
+    SCL = 0;
+    Delay12us();
+    SDA = 1;
+    SCL = 1;
+    Delay12us();
+    SCL = 0;
     Delay12us();
 }
 
@@ -124,7 +190,7 @@ void I2C_SendNAK()
     Delay12us();
     SCL = 0;
     Delay12us();
-}
+}	
 
 void I2C_Stop()
 {
