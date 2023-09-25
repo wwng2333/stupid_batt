@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   I2C                                                               09/25/2023 12:45:56 PAGE 1   
+C51 COMPILER V9.60.0.0   I2C                                                               09/25/2023 12:55:47 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE I2C
@@ -16,124 +16,135 @@ line level    source
    6   1        P3M1 |= 0x0c; 
    7   1      }
    8          
-   9          uint8_t I2C_ReadByte(uint8_t addr)
+   9          void AXP173_Set_Voltage_DCDC2(uint16_t voltage)
   10          {
   11   1        uint8_t dat = 0;
-  12   1        I2C_Start();
-  13   1        I2C_SendData(AXP173_ADDR);
-  14   1        I2C_RecvACK();
-  15   1        I2C_SendData(addr);
-  16   1        I2C_RecvACK();
-  17   1        
-  18   1        Delay30us();
-  19   1        
-  20   1        I2C_Start();
-  21   1        I2C_SendData(AXP173_ADDR + 1);
-  22   1        I2C_RecvACK();
-  23   1        dat = I2C_RecvData();
-  24   1        I2C_SendNAK();
-  25   1        I2C_Stop();
-  26   1        return dat;
-  27   1      }
-  28          
-  29          void I2C_WriteByte(uint8_t addr, uint8_t dat)
-  30          {
+  12   1        if(voltage < 2275 && voltage > 700)
+  13   1        {
+  14   2          dat = (voltage-700)/25;
+  15   2          //printf("DCDC2 %dmV 0x23=%d", voltage, dat);
+  16   2          I2C_WriteByte(0x23, dat); //DC-DC2
+  17   2        }
+  18   1      }
+  19          
+  20          uint8_t I2C_ReadByte(uint8_t addr)
+  21          {
+  22   1        uint8_t dat = 0;
+  23   1        I2C_Start();
+  24   1        I2C_SendData(AXP173_ADDR);
+  25   1        I2C_RecvACK();
+  26   1        I2C_SendData(addr);
+  27   1        I2C_RecvACK();
+  28   1        
+  29   1        Delay30us();
+  30   1        
   31   1        I2C_Start();
-  32   1        I2C_SendData(AXP173_ADDR);
+  32   1        I2C_SendData(AXP173_ADDR + 1);
   33   1        I2C_RecvACK();
-  34   1        I2C_SendData(addr);
-  35   1        I2C_RecvACK();
-  36   1        I2C_SendData(dat);
-  37   1        I2C_RecvACK();
-  38   1        I2C_Stop();
-  39   1      }
-  40          
-  41          void I2C_Start()
-  42          {
-  43   1          SDA = 1;
-  44   1          SCL = 1;
-  45   1          Delay12us();
-  46   1          SDA = 0;
-  47   1          Delay12us();
-  48   1          SCL = 0;
-  49   1      }
-  50          
-  51          void I2C_SendData(uint8_t dat)
-  52          {
-  53   1          unsigned int i;
-  54   1          for(i=0; i<8; i++)
-C51 COMPILER V9.60.0.0   I2C                                                               09/25/2023 12:45:56 PAGE 2   
+  34   1        dat = I2C_RecvData();
+  35   1        I2C_SendNAK();
+  36   1        I2C_Stop();
+  37   1        return dat;
+  38   1      }
+  39          
+  40          void I2C_WriteByte(uint8_t addr, uint8_t dat)
+  41          {
+  42   1        I2C_Start();
+  43   1        I2C_SendData(AXP173_ADDR);
+  44   1        I2C_RecvACK();
+  45   1        I2C_SendData(addr);
+  46   1        I2C_RecvACK();
+  47   1        I2C_SendData(dat);
+  48   1        I2C_RecvACK();
+  49   1        I2C_Stop();
+  50   1      }
+  51          
+  52          void I2C_Start()
+  53          {
+  54   1          SDA = 1;
+C51 COMPILER V9.60.0.0   I2C                                                               09/25/2023 12:55:47 PAGE 2   
 
-  55   1          {
-  56   2              SCL = 0;
-  57   2              Delay12us();
-  58   2              if(dat & 0x80) 
-  59   2                  SDA = 1;
-  60   2              else 
-  61   2                  SDA = 0;
-  62   2              dat <<= 1;
-  63   2              SCL = 1;
-  64   2              Delay12us();
-  65   2          }
-  66   1          SCL = 0;
-  67   1      }
-  68          
-  69          void I2C_RecvACK()
-  70          {
-  71   1          SCL = 0;
-  72   1          Delay12us();
-  73   1          SDA = 0;
-  74   1          SCL = 1;
-  75   1          Delay12us();
-  76   1          SCL = 0;
-  77   1          SDA = 1;
-  78   1          Delay12us();
-  79   1      }
-  80          
-  81          uint8_t I2C_RecvData()
-  82          {
-  83   1          uint8_t dat, i;
-  84   1          for(i=0; i<8; i++)
-  85   1          {
-  86   2              dat <<= 1;
-  87   2              SCL = 0;
-  88   2              Delay12us();
-  89   2              SCL = 1;
-  90   2              Delay12us();
-  91   2              if(SDA) dat += 1;
-  92   2          }
-  93   1          return dat;
-  94   1      }
-  95          
-  96          void I2C_SendNAK()
-  97          {
-  98   1          SCL = 0;
-  99   1          Delay12us();
- 100   1          SDA = 1;
- 101   1          SCL = 1;
- 102   1          Delay12us();
- 103   1          SCL = 0;
- 104   1          Delay12us();
+  55   1          SCL = 1;
+  56   1          Delay12us();
+  57   1          SDA = 0;
+  58   1          Delay12us();
+  59   1          SCL = 0;
+  60   1      }
+  61          
+  62          void I2C_SendData(uint8_t dat)
+  63          {
+  64   1          unsigned int i;
+  65   1          for(i=0; i<8; i++)
+  66   1          {
+  67   2              SCL = 0;
+  68   2              Delay12us();
+  69   2              if(dat & 0x80) 
+  70   2                  SDA = 1;
+  71   2              else 
+  72   2                  SDA = 0;
+  73   2              dat <<= 1;
+  74   2              SCL = 1;
+  75   2              Delay12us();
+  76   2          }
+  77   1          SCL = 0;
+  78   1      }
+  79          
+  80          void I2C_RecvACK()
+  81          {
+  82   1          SCL = 0;
+  83   1          Delay12us();
+  84   1          SDA = 0;
+  85   1          SCL = 1;
+  86   1          Delay12us();
+  87   1          SCL = 0;
+  88   1          SDA = 1;
+  89   1          Delay12us();
+  90   1      }
+  91          
+  92          uint8_t I2C_RecvData()
+  93          {
+  94   1          uint8_t dat, i;
+  95   1          for(i=0; i<8; i++)
+  96   1          {
+  97   2              dat <<= 1;
+  98   2              SCL = 0;
+  99   2              Delay12us();
+ 100   2              SCL = 1;
+ 101   2              Delay12us();
+ 102   2              if(SDA) dat += 1;
+ 103   2          }
+ 104   1          return dat;
  105   1      }
  106          
- 107          void I2C_Stop()
+ 107          void I2C_SendNAK()
  108          {
- 109   1          SDA = 0;
- 110   1          SCL = 1;
- 111   1          Delay12us();
- 112   1          SDA = 1;
+ 109   1          SCL = 0;
+ 110   1          Delay12us();
+ 111   1          SDA = 1;
+ 112   1          SCL = 1;
  113   1          Delay12us();
- 114   1      }
+ 114   1          SCL = 0;
+ 115   1          Delay12us();
+ 116   1      }
+C51 COMPILER V9.60.0.0   I2C                                                               09/25/2023 12:55:47 PAGE 3   
 
+ 117          
+ 118          void I2C_Stop()
+ 119          {
+ 120   1          SDA = 0;
+ 121   1          SCL = 1;
+ 122   1          Delay12us();
+ 123   1          SDA = 1;
+ 124   1          Delay12us();
+ 125   1      }
 
-C51 COMPILER V9.60.0.0   I2C                                                               09/25/2023 12:45:56 PAGE 3   
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    265    ----
+   CODE SIZE        =    321    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =      9    ----
+   DATA SIZE        =     12    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

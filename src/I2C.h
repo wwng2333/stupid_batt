@@ -6,6 +6,8 @@
 sbit SDA = P3^2;
 sbit SCL = P3^3;
 
+void AXP173_Set_Voltage_DCDC2(uint16_t voltage);
+
 uint8_t I2C_ReadByte(uint8_t addr);
 void I2C_WriteByte(uint8_t addr, uint8_t dat);
 	

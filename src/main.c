@@ -7,7 +7,7 @@ int main(void)
 	I2C_Init();
 	while(1)
 	{
-		I2C_WriteByte(0x23, 0x34); //DC-DC2 2.0v
+		AXP173_Set_Voltage_DCDC2(800); //mV
 		I2C_WriteByte(0x12, 0x1F); //Enable ALL Output
 		if(UartOnMsg) UartOnMessage();
 //		for(i=0;i<=0x12;i++)
