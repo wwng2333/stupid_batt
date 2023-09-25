@@ -17,6 +17,17 @@ void AXP173_Set_Voltage_DCDC2(uint16_t voltage)
 	}
 }
 
+void AXP173_Set_Voltage_LDO4(uint16_t voltage)
+{
+	uint8_t dat = 0;
+	if(voltage < 3500 && voltage > 700)
+	{
+		dat = (voltage-700)/25;
+		//printf("DCDC2 %dmV 0x23=%d", voltage, dat);
+		I2C_WriteByte(0x27, dat); //DC-DC2
+	}
+}
+
 uint8_t I2C_ReadByte(uint8_t addr)
 {
 	uint8_t dat = 0;

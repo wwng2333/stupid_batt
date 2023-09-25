@@ -8,6 +8,7 @@ int main(void)
 	while(1)
 	{
 		AXP173_Set_Voltage_DCDC2(800); //mV
+		AXP173_Set_Voltage_LDO4(800);
 		I2C_WriteByte(0x12, 0x1F); //Enable ALL Output
 		if(UartOnMsg) UartOnMessage();
 //		for(i=0;i<=0x12;i++)
