@@ -1,18 +1,19 @@
 #ifndef __I2C_H__
 #define __I2C_H__
 
-#define AXP173_ADDR (0x68 )
+#define AXP173_ADDR 0x68
 
 sbit SDA = P3^2;
 sbit SCL = P3^3;
 
-char I2C_ReadByte(char addr);
-
+uint8_t I2C_ReadByte(uint8_t addr);
+void I2C_WriteByte(uint8_t addr, uint8_t dat);
+	
 void I2C_Init();
 void I2C_Start();
-void I2C_SendData(char dat);
+void I2C_SendData(uint8_t dat);
 void I2C_RecvACK();
-char I2C_RecvData();
+uint8_t I2C_RecvData();
 void I2C_SendNAK();
 void I2C_Stop();
 

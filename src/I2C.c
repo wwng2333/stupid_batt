@@ -6,9 +6,9 @@ void I2C_Init()
 	P3M1 |= 0x0c; 
 }
 
-char I2C_ReadByte(char addr)
+uint8_t I2C_ReadByte(uint8_t addr)
 {
-	char dat = 0;
+	uint8_t dat = 0;
 	I2C_Start();
 	I2C_SendData(AXP173_ADDR);
 	I2C_RecvACK();
@@ -26,6 +26,18 @@ char I2C_ReadByte(char addr)
 	return dat;
 }
 
+void I2C_WriteByte(uint8_t addr, uint8_t dat)
+{
+	I2C_Start();
+	I2C_SendData(AXP173_ADDR);
+	I2C_RecvACK();
+	I2C_SendData(addr);
+	I2C_RecvACK();
+	I2C_SendData(dat);
+	I2C_RecvACK();
+	I2C_Stop();
+}
+
 void I2C_Start()
 {
     SDA = 1;
@@ -36,7 +48,7 @@ void I2C_Start()
     SCL = 0;
 }
 
-void I2C_SendData(char dat)
+void I2C_SendData(uint8_t dat)
 {
     unsigned int i;
     for(i=0; i<8; i++)
@@ -66,10 +78,9 @@ void I2C_RecvACK()
     Delay12us();
 }
 
-char I2C_RecvData()
+uint8_t I2C_RecvData()
 {
-    unsigned int i;
-    unsigned char dat;
+    uint8_t dat, i;
     for(i=0; i<8; i++)
     {
         dat <<= 1;

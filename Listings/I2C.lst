@@ -1,10 +1,10 @@
-C51 COMPILER V9.60.0.0   I2C                                                               09/25/2023 09:39:23 PAGE 1   
+C51 COMPILER V9.60.0.0   I2C                                                               09/25/2023 12:45:56 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE I2C
 OBJECT MODULE PLACED IN .\Objects\I2C.obj
-COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE I2C.c OPTIMIZE(0,SIZE) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\I2C.ls
-                    -t) TABS(2) OBJECT(.\Objects\I2C.obj)
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE src\I2C.c OPTIMIZE(0,SIZE) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\I2
+                    -C.lst) TABS(2) OBJECT(.\Objects\I2C.obj)
 
 line level    source
 
@@ -16,9 +16,9 @@ line level    source
    6   1        P3M1 |= 0x0c; 
    7   1      }
    8          
-   9          char I2C_ReadByte(char addr)
+   9          uint8_t I2C_ReadByte(uint8_t addr)
   10          {
-  11   1        char dat = 0;
+  11   1        uint8_t dat = 0;
   12   1        I2C_Start();
   13   1        I2C_SendData(AXP173_ADDR);
   14   1        I2C_RecvACK();
@@ -36,91 +36,104 @@ line level    source
   26   1        return dat;
   27   1      }
   28          
-  29          void I2C_Start()
+  29          void I2C_WriteByte(uint8_t addr, uint8_t dat)
   30          {
-  31   1          SDA = 1;
-  32   1          SCL = 1;
-  33   1          Delay12us();
-  34   1          SDA = 0;
-  35   1          Delay12us();
-  36   1          SCL = 0;
-  37   1      }
-  38          
-  39          void I2C_SendData(char dat)
-  40          {
-  41   1          unsigned int i;
-  42   1          for(i=0; i<8; i++)
-  43   1          {
-  44   2              SCL = 0;
-  45   2              Delay12us();
-  46   2              if(dat & 0x80) 
-  47   2                  SDA = 1;
-  48   2              else 
-  49   2                  SDA = 0;
-  50   2              dat <<= 1;
-  51   2              SCL = 1;
-  52   2              Delay12us();
-  53   2          }
-  54   1          SCL = 0;
-C51 COMPILER V9.60.0.0   I2C                                                               09/25/2023 09:39:23 PAGE 2   
+  31   1        I2C_Start();
+  32   1        I2C_SendData(AXP173_ADDR);
+  33   1        I2C_RecvACK();
+  34   1        I2C_SendData(addr);
+  35   1        I2C_RecvACK();
+  36   1        I2C_SendData(dat);
+  37   1        I2C_RecvACK();
+  38   1        I2C_Stop();
+  39   1      }
+  40          
+  41          void I2C_Start()
+  42          {
+  43   1          SDA = 1;
+  44   1          SCL = 1;
+  45   1          Delay12us();
+  46   1          SDA = 0;
+  47   1          Delay12us();
+  48   1          SCL = 0;
+  49   1      }
+  50          
+  51          void I2C_SendData(uint8_t dat)
+  52          {
+  53   1          unsigned int i;
+  54   1          for(i=0; i<8; i++)
+C51 COMPILER V9.60.0.0   I2C                                                               09/25/2023 12:45:56 PAGE 2   
 
-  55   1      }
-  56          
-  57          void I2C_RecvACK()
-  58          {
-  59   1          SCL = 0;
-  60   1          Delay12us();
-  61   1          SDA = 0;
-  62   1          SCL = 1;
-  63   1          Delay12us();
-  64   1          SCL = 0;
-  65   1          SDA = 1;
-  66   1          Delay12us();
+  55   1          {
+  56   2              SCL = 0;
+  57   2              Delay12us();
+  58   2              if(dat & 0x80) 
+  59   2                  SDA = 1;
+  60   2              else 
+  61   2                  SDA = 0;
+  62   2              dat <<= 1;
+  63   2              SCL = 1;
+  64   2              Delay12us();
+  65   2          }
+  66   1          SCL = 0;
   67   1      }
   68          
-  69          char I2C_RecvData()
+  69          void I2C_RecvACK()
   70          {
-  71   1          unsigned int i;
-  72   1          unsigned char dat;
-  73   1          for(i=0; i<8; i++)
-  74   1          {
-  75   2              dat <<= 1;
-  76   2              SCL = 0;
-  77   2              Delay12us();
-  78   2              SCL = 1;
-  79   2              Delay12us();
-  80   2              if(SDA) dat += 1;
-  81   2          }
-  82   1          return dat;
-  83   1      }
-  84          
-  85          void I2C_SendNAK()
-  86          {
-  87   1          SCL = 0;
-  88   1          Delay12us();
-  89   1          SDA = 1;
-  90   1          SCL = 1;
-  91   1          Delay12us();
-  92   1          SCL = 0;
-  93   1          Delay12us();
+  71   1          SCL = 0;
+  72   1          Delay12us();
+  73   1          SDA = 0;
+  74   1          SCL = 1;
+  75   1          Delay12us();
+  76   1          SCL = 0;
+  77   1          SDA = 1;
+  78   1          Delay12us();
+  79   1      }
+  80          
+  81          uint8_t I2C_RecvData()
+  82          {
+  83   1          uint8_t dat, i;
+  84   1          for(i=0; i<8; i++)
+  85   1          {
+  86   2              dat <<= 1;
+  87   2              SCL = 0;
+  88   2              Delay12us();
+  89   2              SCL = 1;
+  90   2              Delay12us();
+  91   2              if(SDA) dat += 1;
+  92   2          }
+  93   1          return dat;
   94   1      }
   95          
-  96          void I2C_Stop()
+  96          void I2C_SendNAK()
   97          {
-  98   1          SDA = 0;
-  99   1          SCL = 1;
- 100   1          Delay12us();
- 101   1          SDA = 1;
+  98   1          SCL = 0;
+  99   1          Delay12us();
+ 100   1          SDA = 1;
+ 101   1          SCL = 1;
  102   1          Delay12us();
- 103   1      }
+ 103   1          SCL = 0;
+ 104   1          Delay12us();
+ 105   1      }
+ 106          
+ 107          void I2C_Stop()
+ 108          {
+ 109   1          SDA = 0;
+ 110   1          SCL = 1;
+ 111   1          Delay12us();
+ 112   1          SDA = 1;
+ 113   1          Delay12us();
+ 114   1      }
 
+
+C51 COMPILER V9.60.0.0   I2C                                                               09/25/2023 12:45:56 PAGE 3   
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    235    ----
+   CODE SIZE        =    265    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =      8    ----
+   DATA SIZE        =      9    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
