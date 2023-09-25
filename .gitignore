@@ -1,0 +1,17 @@
+*.log
+*.log.lock
+*.axf
+*.html
+*.d
+*.o
+*.iex
+*.sct
+*.dep
+*.lnp
+*.htm
+*.hex
+*.scvd
+Listings/*
+Objects/*
+*.uvopt
+
