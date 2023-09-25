@@ -15,8 +15,8 @@ int main(void)
 	{
 		printf("aps:%.2fV\r\n", AXP173_Read_APS_Voltage());
 		printf("temp:%.2fC\r\n", AXP173_Read_InternalTemp());
-		printf("bat:%.2fV\r\n", AXP173_Read_BAT_Voltage());
-		printf("vbus:%.2fV\r\n", AXP173_Read_VBUS_Voltage());
+		printf("bat:%.2fV, %.2fmA\r\n", AXP173_Read_BAT_Voltage(), AXP173_Read_BAT_Current());
+		printf("vbus:%.2fV, %.2fmA\r\n", AXP173_Read_VBUS_Voltage(), AXP173_Read_VBUS_Current());
 		//I2C_Read_2Byte(0x5A); //VBUS Voltage
 		//I2C_Read_2Byte(0x5C); //VBUS Current
 		if(UartOnMsg) UartOnMessage();

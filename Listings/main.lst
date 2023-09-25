@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   MAIN                                                              09/25/2023 19:22:07 PAGE 1   
+C51 COMPILER V9.60.0.0   MAIN                                                              09/25/2023 19:53:34 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
@@ -25,8 +25,8 @@ line level    source
   15   1        {
   16   2          printf("aps:%.2fV\r\n", AXP173_Read_APS_Voltage());
   17   2          printf("temp:%.2fC\r\n", AXP173_Read_InternalTemp());
-  18   2          printf("bat:%.2fV\r\n", AXP173_Read_BAT_Voltage());
-  19   2          printf("vbus:%.2fV\r\n", AXP173_Read_VBUS_Voltage());
+  18   2          printf("bat:%.2fV, %.2fmA\r\n", AXP173_Read_BAT_Voltage(), AXP173_Read_BAT_Current());
+  19   2          printf("vbus:%.2fV, %.2fmA\r\n", AXP173_Read_VBUS_Voltage(), AXP173_Read_VBUS_Current());
   20   2          //I2C_Read_2Byte(0x5A); //VBUS Voltage
   21   2          //I2C_Read_2Byte(0x5C); //VBUS Current
   22   2          if(UartOnMsg) UartOnMessage();
@@ -45,8 +45,8 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    151    ----
-   CONSTANT SIZE    =     50    ----
+   CODE SIZE        =    202    ----
+   CONSTANT SIZE    =     66    ----
    XDATA SIZE       =      4    ----
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
