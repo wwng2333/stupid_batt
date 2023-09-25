@@ -26,30 +26,32 @@ void UartIsr() interrupt 4
             ISP_INDEX++;
             if (STCISPCMD[ISP_INDEX] == '\0')
                 IAP_CONTR = 0x60;
-        } else {
+        }
+        else
+        {
             ISP_INDEX = 0;
             if (SBUF == STCISPCMD[ISP_INDEX])
                 ISP_INDEX++;
         }
-        if(wptr > 16) 
-				{
-					//UartSendErr();
-					wptr = 0; //clear
-				}
-        else if(SBUF == 0x0A) 
-				{
-					buffer[wptr++] = '\0';
-					wptr = 0;
-					UartOnMsg = 1;
-				}
+        if (wptr > 16)
+        {
+            // UartSendErr();
+            wptr = 0; // clear
+        }
+        else if (SBUF == 0x0A)
+        {
+            buffer[wptr++] = '\0';
+            wptr = 0;
+            UartOnMsg = 1;
+        }
     }
 }
 
 void UartOnMessage(void)
 {
-	UartSendStr(buffer);
-	UartSendOK();
-	UartOnMsg = 0;
+    UartSendStr(buffer);
+    UartSendOK();
+    UartOnMsg = 0;
 }
 
 void UartInit()
@@ -72,7 +74,8 @@ void UartInit()
 
 void UartSend(char dat)
 {
-    while (busy);
+    while (busy)
+        ;
     busy = 1;
     SBUF = dat;
 }
@@ -80,7 +83,8 @@ void UartSend(char dat)
 char putchar(char ch)
 {
     SBUF = ch;
-    while(TI == 0);
+    while (TI == 0)
+        ;
     TI = 0;
     return ch;
 }
@@ -93,10 +97,10 @@ void UartSendStr(char *p)
     }
 }
 
-//void UartSendErr(void)
+// void UartSendErr(void)
 //{
-//    UartSendStr("Error\r\n");
-//}
+//     UartSendStr("Error\r\n");
+// }
 
 void UartSendOK(void)
 {

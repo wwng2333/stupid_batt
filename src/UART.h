@@ -8,7 +8,7 @@ void UartIsr();
 void UartInit();
 void UartSend(char dat);
 void UartSendStr(char *p);
-void UartInitReport(char *p);
+//void UartInitReport(char *p);
 void UartOnMessage(void);
 static void UartSendErr(void);
 static void UartSendOK(void);

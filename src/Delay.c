@@ -1,24 +1,26 @@
 #include "main.h"
 
-void Delay12us()		//@11.0592MHz
+void Delay12us() //@11.0592MHz
 {
 	unsigned char i;
 
 	i = 20;
-	while (--i);
+	while (--i)
+		;
 }
 
-void Delay30us()		//@11.0592MHz
+void Delay30us() //@11.0592MHz
 {
 	unsigned char i;
 
 	_nop_();
 	_nop_();
 	i = 108;
-	while (--i);
+	while (--i)
+		;
 }
 
-void Delay500ms()		//@11.0592MHz
+void Delay500ms() //@11.0592MHz
 {
 	unsigned char i, j, k;
 
@@ -29,7 +31,8 @@ void Delay500ms()		//@11.0592MHz
 	{
 		do
 		{
-			while (--k);
+			while (--k)
+				;
 		} while (--j);
 	} while (--i);
 }
