@@ -73,6 +73,31 @@ void AXP173_Set_Voltage_LDO4(uint16_t voltage)
 	}
 }
 
+uint32_t I2C_Read_32Bit(uint8_t addr)
+{
+	uint32_t dat = 0;
+	uint8_t dat1, dat2, dat3, dat4;
+	I2C_Start();
+	I2C_SendData(AXP173_ADDR);
+	I2C_RecvACK();
+	I2C_SendData(addr);
+	I2C_RecvACK();
+	I2C_Start();
+	I2C_SendData(AXP173_ADDR + 1);
+	I2C_RecvACK();
+	dat1 = I2C_RecvData();
+	I2C_SendACK();
+	dat2 = I2C_RecvData();
+	I2C_SendACK();
+	dat3 = I2C_RecvData();
+	I2C_SendACK();
+	dat4 = I2C_RecvData();
+	I2C_SendNAK();
+	I2C_Stop();
+	dat = (dat1 << 24) + (dat2 << 16) + (dat3 << 8) + dat2;
+	return dat;
+}
+
 uint16_t I2C_Read_13Bit(uint8_t addr)
 {
 	uint16_t dat = 0;

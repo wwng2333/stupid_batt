@@ -2,9 +2,9 @@
 
 void Delay12us() //@11.0592MHz
 {
-	unsigned char i;
+	unsigned char data i;
 
-	i = 20;
+	i = 14;
 	while (--i)
 		;
 }
